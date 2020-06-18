@@ -122,7 +122,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
    */
 //   check if the landmark can be observed by particles, if yes set as valid particle
 //     tran_obse.push_back(tran_xy);
-  
+  weights.clear();
   for(int i=0; i<int(particles.size()); i++){
       vector<LandmarkObs> predi_valid;
     for(int j=0; j<int(map_landmarks.landmark_list.size()); j++){
@@ -132,7 +132,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       }
     }
       
-    vector<LandmarkObs> tran_xy_set; //shall we clean up?
+    vector<LandmarkObs> tran_xy_set; //M: shall we clean up?
     
     for(int n=0; i<int(observations.size()); n++){
         LandmarkObs tran_xy;
@@ -151,6 +151,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       particles[i].weight *=  weight_temp;
     }
   weights.push_back(particles[i].weight);
+  predi_valid.clear();
+  tran_xy_set.clear();
   }
 }
 
