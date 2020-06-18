@@ -47,7 +47,8 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     parti.weight = 1;
     particles.push_back(parti);
   }
-
+  is_initialized = true;
+  std::cout << "init state is: " << is_initialized <<std::endl;
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[],
@@ -73,6 +74,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
           particles[i].y += velocity / yaw_rate * (cos(particles[i].theta) - cos(particles[i].theta + yaw_rate*delta_t)) + noise_y(generator);
           particles[i].theta += yaw_rate * delta_t + noise_theta(generator);
     }
+    std::cout <<"particles theta update is: "<< particles[i].theta <<std::endl;
   }
 }
 
@@ -94,13 +96,14 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
 //     choose the closest predict point
   for(int i=0; i<int(observations.size());i++){
     double min_distance = std::numeric_limits<float>::max();
-    for(int j=0; i<int(predicted.size()); j++){
+    for(int j=0; j<int(predicted.size()); j++){
       double distance = dist(observations[i].x, observations[i].y, predicted[j].x, predicted[j].y);
       if(distance<min_distance){
           min_distance = distance;
         observations[i].id = predicted[j].id;
       }
     }
+//   std::cout << "observations.size() is: " << observations.size() <<std::endl;
    }
   }
 
@@ -134,13 +137,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       
     vector<LandmarkObs> tran_xy_set; //M: shall we clean up?
     
-    for(int n=0; i<int(observations.size()); n++){
+    for(int n=0; n<int(observations.size()); n++){
         LandmarkObs tran_xy;
       tran_xy.id = observations[n].id;
-      tran_xy.x = observations[n].x * cos(particles[n].theta) - observations[n].y * sin(particles[n].theta) + particles[n].x;
-      tran_xy.y = observations[n].x * sin(particles[n].theta) + observations[n].y * cos(particles[n].theta) + particles[n].y;
+      tran_xy.x = observations[n].x * cos(particles[i].theta) - observations[n].y * sin(particles[i].theta) + particles[i].x;
+      tran_xy.y = observations[n].x * sin(particles[i].theta) + observations[n].y * cos(particles[i].theta) + particles[i].y;
       tran_xy_set.push_back(tran_xy);
     }
+//       std::cout << "observations.size() is in the coor transfer: " << observations.size() <<std::endl;
     ParticleFilter::dataAssociation(predi_valid, tran_xy_set);
     
     for(int m=0; m<int(tran_xy_set.size());m++){
@@ -151,6 +155,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       particles[i].weight *=  weight_temp;
     }
   weights.push_back(particles[i].weight);
+//       std::cout << "weights has length: " << weights.size() <<std::endl;
   predi_valid.clear();
   tran_xy_set.clear();
   }
@@ -176,6 +181,7 @@ void ParticleFilter::resample() {
     resa_parti.push_back(particles[index]);
   }
   particles = resa_parti;
+//   std::cout << "particles after resample has length: " << particles.size() <<std::endl;
 }
 
 void ParticleFilter::SetAssociations(Particle& particle,
