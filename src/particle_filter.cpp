@@ -74,7 +74,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
           particles[i].y += velocity / yaw_rate * (cos(particles[i].theta) - cos(particles[i].theta + yaw_rate*delta_t)) + noise_y(generator);
           particles[i].theta += yaw_rate * delta_t + noise_theta(generator);
     }
-    std::cout <<"particles theta update is: "<< particles[i].theta <<std::endl;
+//     std::cout <<"particles theta update is: "<< particles[i].theta <<std::endl;
   }
 }
 
