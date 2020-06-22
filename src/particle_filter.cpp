@@ -46,6 +46,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     parti.theta = dist_theta(generator);
     parti.weight = 1;
     particles.push_back(parti);
+    weights.push_back(1.0);
   }
   is_initialized = true;
   std::cout << "init state is: " << is_initialized <<std::endl;
