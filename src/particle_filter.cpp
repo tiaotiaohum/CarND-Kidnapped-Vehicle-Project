@@ -156,7 +156,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       particles[i].weight *=  weight_temp;
     }
   weights.push_back(particles[i].weight);
-//       std::cout << "weights has length: " << weights.size() <<std::endl;
   predi_valid.clear();
   tran_xy_set.clear();
   }
@@ -172,16 +171,20 @@ void ParticleFilter::resample() {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::discrete_distribution<> weight_dist(weights.begin(), weights.end());
+//   std::cout << "weights has length: " << weights.size() <<std::endl;
+//   std::discrete_distribution<> weight_dist(weights);
   
-  vector<Particle> resa_parti;
+  vector<Particle> resa_parti(num_particles);
 //   resa_parti.resize(num_particles);
   int index;
   
   for(int i=0; i<num_particles; i++){
       index = weight_dist(gen);
-    resa_parti.push_back(particles[index]);
+//     resa_parti.push_back(particles[index]);
+      resa_parti[i]=particles[index];
   }
   particles = resa_parti;
+//   resa_parti.clear();
 //   std::cout << "particles after resample has length: " << particles.size() <<std::endl;
 }
 
