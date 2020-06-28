@@ -36,7 +36,6 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
   std::normal_distribution<double> dist_theta(theta, std[2]);
   
   std::default_random_engine generator;
-//   std::vector<Particle> parti_set;
   
   for(int i=0; i<num_particles; i++){
       Particle parti;
@@ -46,7 +45,6 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     parti.theta = dist_theta(generator);
     parti.weight = 1;
     particles.push_back(parti);
-//     weights.push_back(1.0);
   }
   is_initialized = true;
   std::cout << "init state is: " << is_initialized <<std::endl;
@@ -76,7 +74,6 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
           particles[i].y += velocity / yaw_rate * (cos(particles[i].theta) - cos(particles[i].theta + yaw_rate*delta_t)) + noise_y(generator);
           particles[i].theta += yaw_rate * delta_t + noise_theta(generator);
     }
-//     std::cout <<"particles theta update is: "<< particles[i].theta <<std::endl;
   }
 }
 
@@ -105,7 +102,6 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
         observations[i].id = predicted[j].id;
       }
     }
-//   std::cout << "observations.size() is: " << observations.size() <<std::endl;
    }
   }
 
@@ -126,8 +122,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
    *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
    */
 //   check if the landmark can be observed by particles, if yes set as valid particle
-//     tran_obse.push_back(tran_xy);
-//   weights.clear();
+
   for (int i = 0; i < particles.size(); i++) {
      particles[i].weight = 1.0;
    }
@@ -141,7 +136,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       }
     }
       
-    vector<LandmarkObs> tran_xy_set; //M: shall we clean up?
+    vector<LandmarkObs> tran_xy_set; 
     
     for(int n=0; n<int(observations.size()); n++){
         LandmarkObs tran_xy;
@@ -150,7 +145,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       tran_xy.y = observations[n].x * sin(particles[i].theta) + observations[n].y * cos(particles[i].theta) + particles[i].y;
       tran_xy_set.push_back(tran_xy);
     }
-//       std::cout << "observations.size() is in the coor transfer: " << observations.size() <<std::endl;
+
     ParticleFilter::dataAssociation(predi_valid, tran_xy_set);
     
     for(int m=0; m<int(tran_xy_set.size());m++){
@@ -161,7 +156,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       particles[i].weight *=  weight_temp;
     }
   weights.push_back(particles[i].weight);
-//   weights[i]=particles[i].weight;
+
   predi_valid.clear();
   tran_xy_set.clear();
   }
@@ -174,25 +169,7 @@ void ParticleFilter::resample() {
 //    * NOTE: You may find std::discrete_distribution helpful here.
 //    *   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 //    */
-//   std::random_device r//   std::mt19937 gen(r);
-// //   std::discrete_distribution<> weight_dist(weights.begin(), weightsd());
-// // //   std::cout << "weights has length: " << weights.size() <d::endl;
-// // //   std::discrete_distribution<> weight_diseights);
-  
-// //   vector<Particle> resa_partum_particles);
-// // //   resa_parti.ree(num_particl;
-// //   int index;
-  
-// //   for(int i i<num_particles; i++){
-// //    index = weight_dist(gen);
-// // //     resa_pa.push_back(particles[index]);
-// //       resa_parti[i]=particles[index];
-//   }
-//   particles = resa_parti;
-// //   resa_parti.clear();
-// //   std::cout << "particles after resample has length: " << particles.size() <<std::endl;
 
-// v2: proposed by mentor
   std::random_device rd;
   std::mt19937 gen(rd());
    vector<double> p_weights;
@@ -200,23 +177,16 @@ void ParticleFilter::resample() {
      p_weights.push_back(particles[i].weight);
    }
   std::discrete_distribution<> weight_dist(p_weights.begin(), p_weights.end());
-//   std::cout << "weights has length: " << weights.size() <<std::endl;
-//   std::discrete_distribution<> weight_dist(weights);
   
   vector<Particle> resa_parti;
-//   resa_parti.resize(num_particles);
+
   int index;
   
   for(int i=0; i<num_particles; i++){
       index = weight_dist(gen);
-//     resa_parti.push_back(particles[index]);
       resa_parti.push_back(particles[index]);
   }
   particles = resa_parti;
-//   resa_parti.clear();
-//   std::cout << "particles after resample has length: " << particles.size() <<std::endl;
-
-
 }
 
 void ParticleFilter::SetAssociations(Particle& particle,
