@@ -155,7 +155,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       double weight_temp = exp(-(x_diff + y_diff)) / (2 * M_PI * std_landmark[0] * std_landmark[1]);
       particles[i].weight *=  weight_temp;
     }
-  weights.push_back(particles[i].weight);
 
   predi_valid.clear();
   tran_xy_set.clear();
